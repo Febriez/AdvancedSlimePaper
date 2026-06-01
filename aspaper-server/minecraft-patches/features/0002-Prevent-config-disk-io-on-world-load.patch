@@ -5,10 +5,10 @@ Subject: [PATCH] Prevent config disk io on world load
 
 
 diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
-index 58ed69b501daa445747050ae3c2532292bf2c386..c0873f9cec8b5877157b7f8803b617465cb0876b 100644
+index b59f29850d3ef1840b740cfc3b2f254686620cb9..54cdc9c357c446b530c2ae757f1243d1912d02a0 100644
 --- a/net/minecraft/server/level/ServerLevel.java
 +++ b/net/minecraft/server/level/ServerLevel.java
-@@ -659,7 +659,7 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
+@@ -660,7 +660,7 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
          savedDataStorage.set(io.papermc.paper.world.saveddata.PaperWorldPDC.TYPE, loadedWorldData.pdc() == null ? io.papermc.paper.world.saveddata.PaperWorldPDC.TYPE.constructor().get() : loadedWorldData.pdc());
          final GameRules gameRules = new GameRules(server.getWorldData().enabledFeatures(), savedDataStorage.computeIfAbsent(net.minecraft.world.level.gamerules.GameRuleMap.TYPE));
          this.gameRules = gameRules;
@@ -18,11 +18,10 @@ index 58ed69b501daa445747050ae3c2532292bf2c386..c0873f9cec8b5877157b7f8803b61746
          this.weatherData.setLevel(this);
          this.typeKey = typeKey;
 diff --git a/net/minecraft/world/level/Level.java b/net/minecraft/world/level/Level.java
-index e34e901dce06c6bc6060418593010dcfb38e9396..e1fd30fc9b17d241c421c66114c9611b2979053e 100644
+index 56659181dc817ea028428eabf5937308c04b8cc5..90600ee28f28b7a863dba2c750b4a2195fb91c7a 100644
 --- a/net/minecraft/world/level/Level.java
 +++ b/net/minecraft/world/level/Level.java
-@@ -849,7 +849,7 @@ public abstract class Level implements LevelAccessor, AutoCloseable, ca.spottedl
-         this.maxSectionY = this.maxY >> 4;
+@@ -850,7 +850,7 @@ public abstract class Level implements LevelAccessor, AutoCloseable, ca.spottedl
          this.sectionsCount = this.maxSectionY - this.minSectionY + 1;
          // Paper end - getblock optimisations - cache world height/sections
          final org.bukkit.NamespacedKey worldKey = CraftNamespacedKey.fromMinecraft(dimension.identifier()); // Paper
@@ -30,4 +29,4 @@ index e34e901dce06c6bc6060418593010dcfb38e9396..e1fd30fc9b17d241c421c66114c9611b
 +        this.spigotConfig = new org.spigotmc.SpigotWorldConfig(bukkitName, CraftNamespacedKey.fromMinecraft(dimension.identifier()), !(this instanceof com.infernalsuite.asp.level.SlimeLevelInstance)); // Spigot //ASP - Improve Slime IO
          this.paperConfig = paperWorldConfigCreator.apply(this.spigotConfig); // Paper - create paper world config
          this.generator = generator;
-         this.world = new CraftWorld((ServerLevel) this, generator, biomeProvider, environment);
+         this.world = new CraftWorld((ServerLevel) this, worldKey, biomeProvider, environment);
