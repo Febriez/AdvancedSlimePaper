@@ -119,7 +119,25 @@ public class SlimeLevelInstance extends ServerLevel {
                 pdc,
                 PaperLevelOverrides.createFromLiveLevelData(primaryLevelData)
         );
+
+        SlimePropertyMap propertyMap = slimeBootstrap.initial().getPropertyMap();
+        data.levelOverrides().setSpawn(
+                new LevelData.RespawnData(
+                        GlobalPos.of(
+                                ResourceKey.create(Registries.DIMENSION, dimensionKey.identifier()),
+                                new BlockPos(
+                                        propertyMap.getValue(SlimeProperties.SPAWN_X),
+                                        propertyMap.getValue(SlimeProperties.SPAWN_Y),
+                                        propertyMap.getValue(SlimeProperties.SPAWN_Z)
+                                )
+                        ),
+                        Mth.wrapDegrees(propertyMap.getValue(SlimeProperties.SPAWN_YAW)),
+                        Mth.wrapDegrees(0F)
+                )
+        );
+        data.levelOverrides().setDifficulty(Difficulty.valueOf(propertyMap.getValue(SlimeProperties.DIFFICULTY).toUpperCase()));
         data.levelOverrides().attach(primaryLevelData, dimensionKey);
+        data.levelOverrides().setInitialized(true);
 
         super(
                 slimeBootstrap,
@@ -143,25 +161,6 @@ public class SlimeLevelInstance extends ServerLevel {
                 data
         );
         this.slimeInstance = new SlimeInMemoryWorld(slimeBootstrap, this);
-
-
-        SlimePropertyMap propertyMap = slimeBootstrap.initial().getPropertyMap();
-
-        this.serverLevelData.setDifficulty(Difficulty.valueOf(propertyMap.getValue(SlimeProperties.DIFFICULTY).toUpperCase()));
-        serverLevelData.setSpawn(
-                new LevelData.RespawnData(
-                        GlobalPos.of(
-                                ResourceKey.create(Registries.DIMENSION, this.dimension().identifier()),
-                                new BlockPos(
-                                        propertyMap.getValue(SlimeProperties.SPAWN_X),
-                                        propertyMap.getValue(SlimeProperties.SPAWN_Y),
-                                        propertyMap.getValue(SlimeProperties.SPAWN_Z)
-                                )
-                        ),
-                        Mth.wrapDegrees(propertyMap.getValue(SlimeProperties.SPAWN_YAW)),
-                        Mth.wrapDegrees(0F)
-                )
-        );
 
         super.chunkSource.setSpawnSettings(propertyMap.getValue(SlimeProperties.ALLOW_MONSTERS), propertyMap.getValue(SlimeProperties.ALLOW_ANIMALS));
 
