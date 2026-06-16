@@ -271,7 +271,7 @@ public class SlimeLevelInstance extends ServerLevel {
                     }
 
                     @Override
-                    public @NotNull FileVisitResult postVisitDirectory(Path dir, @javax.annotation.Nullable IOException exception) throws IOException {
+                    public @NotNull FileVisitResult postVisitDirectory(Path dir, @org.jspecify.annotations.Nullable IOException exception) throws IOException {
                         if (exception != null) {
                             throw exception;
                         } else {

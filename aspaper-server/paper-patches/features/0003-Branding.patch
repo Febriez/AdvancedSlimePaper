@@ -114,15 +114,16 @@ diff --git a/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java b/src/main/
 index 74ffdc823e66fc5ec027c4b7c462382bcbfe2be2..2610e8d1ce20331895b0a76fa50efc062001678e 100644
 --- a/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
 +++ b/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
-@@ -31,6 +31,7 @@ public record ServerBuildInfoImpl(
+@@ -31,6 +31,8 @@ public record ServerBuildInfoImpl(
      private static final String ATTRIBUTE_GIT_COMMIT = "Git-Commit";
  
      private static final String BRAND_PAPER_NAME = "Paper";
 +    private static final String BRAND_ADVANCED_SLIME_PAPER_NAME = "AdvancedSlimePaper";
++    private static final Key BRAND_ADVANCED_SLIME_PAPER_ID = Key.key("infernalsuite", "advancedslimepaper");
  
      private static final String BUILD_DEV = "DEV";
  
-@@ -42,9 +43,9 @@ public record ServerBuildInfoImpl(
+@@ -42,9 +44,9 @@ public record ServerBuildInfoImpl(
          this(
              getManifestAttribute(manifest, ATTRIBUTE_BRAND_ID)
                  .map(Key::key)
@@ -134,7 +135,7 @@ index 74ffdc823e66fc5ec027c4b7c462382bcbfe2be2..2610e8d1ce20331895b0a76fa50efc06
              SharedConstants.getCurrentVersion().id(),
              SharedConstants.getCurrentVersion().name(),
              getManifestAttribute(manifest, ATTRIBUTE_BUILD_NUMBER)
-@@ -61,7 +62,7 @@ public record ServerBuildInfoImpl(
+@@ -61,7 +63,7 @@ public record ServerBuildInfoImpl(
  
      @Override
      public boolean isBrandCompatible(final @NotNull Key brandId) {
