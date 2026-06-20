@@ -92,8 +92,8 @@ public class SlimeInMemoryWorld implements SlimeWorld, SlimeWorldInstance {
                     0L, null, null, null);
 
             //Make SlimeProperties.DEFAULT_BIOME work
-            levelChunk.fillBiomesFromNoise(instance.chunkSource.getGenerator().getBiomeSource(),
-                    instance.chunkSource.randomState().sampler());
+            levelChunk.fillBiomesFromNoise(instance.getChunkSource().getGenerator().getBiomeSource(),
+                    instance.getChunkSource().randomState().sampler());
 
         } else {
             levelChunk = SlimeChunkConverter.deserializeSlimeChunk(this.instance, chunk);
@@ -204,11 +204,11 @@ public class SlimeInMemoryWorld implements SlimeWorld, SlimeWorldInstance {
 
         // Serialize Bukkit Values (PDC)
 
+        // Deep-copy the world PDC so later mutation can't affect serialization (nms nbt is mutable)
         var nmsTag = new net.minecraft.nbt.CompoundTag();
-        this.instance.getWorld().storeBukkitValues(nmsTag);
+        this.instance.persistentDataContainer.getTagsCloned().forEach(nmsTag::put);
 
-        // Bukkit stores the relevant tag as a tag with the key "BukkitValues" in the tag we supply to it
-        var adventureTag = Converter.convertTag(nmsTag.getCompoundOrEmpty("BukkitValues"));
+        var adventureTag = Converter.convertTag(nmsTag);
         world.getExtraData().put("BukkitValues", adventureTag);
 
         return new SkeletonSlimeWorld(world.getName(),
